@@ -1,0 +1,10 @@
+
+    <img src=<%=game.locations[game.currentLocation].source %> alt="">
+    <h1><%=game.locations[game.currentLocation].name%></h1>
+    <h2><%=game.huntStatus%></h2>
+    <h2> Bullets: <%= game.supplies.bullet %></h2>
+    <h2> Food: <%= game.supplies.poundsFood %></h2>
+
+
+      <a href="/hunt"><button type="button" name="button">Hunt for the day</button></a>
+    <a href="/turn"><button type="button" name="button">Head back down the Trail</button></a>

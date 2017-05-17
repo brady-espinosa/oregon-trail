@@ -9,7 +9,7 @@ app.use(express.static('public'));
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
-//app.use(expressLayouts);
+app.use(expressLayouts)
 
 function loadGame(request){
   let gameId = request.cookies.gameId
@@ -56,6 +56,17 @@ app.get('/turn',function(request,response){
   let step = game.takeTurn()
   game.save()
   response.render(step, {game: game})
+})
+app.get('/preHunt', function(request, response){
+  let game = loadGame(request)
+  response.render('preHunt', {game: game})
+})
+
+app.get('/hunt', function(request, response){
+  let game = loadGame(request)
+  hunt = game.hunt()
+  game.save()
+  response.render(hunt, {game: game})
 })
 
 app.listen(3000, function(){

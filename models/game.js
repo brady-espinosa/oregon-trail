@@ -12,37 +12,51 @@ class Game {
       bullet: Math.floor(Math.random()*500)+1,
       poundsFood: Math.floor(Math.random()*200)+101
     }
+    this.huntStatus = "Fire Away!"
     this.recentlyBroken = ""
     this.recentlyRecovered = ""
     this.recentlyDeceased = ""
     this.recentlyFellIll = ""
     this.brokeDown = false
     this.locations = [
-        { name: "Rachel's Death Valley",
-          source: "a.png"},
-        { name: "Brady's Terranium",
-          source: "b.png"},
-        { name: "nicks's Terranium",
-          source: "b.png"},
-        { name: "alex's Terranium",
-          source: "b.png"},
-        { name: "antonio's Terranium",
-          source: "b.png"},
-        { name: "gabe's Terranium",
-          source: "b.png"},
-        { name: "Brady's bungalow",
-          source: "b.png"}
+        { name: "Independance Rock",
+          source: "https://d1u1p2xjjiahg3.cloudfront.net/89db9648-2aa1-470a-a7ca-b2e2151a1c02.jpg",
+          message: "a beautiful rock that marks the outset of your journey. there is a long road ahead"},
+        { name: "Death Valley",
+          source: "http://assets.fodors.com/destinations/431326/rock-desert-death-valley-national-park-california-usa_main.jpg",
+          message: "your party comes across a valley of scorching heat, water is scarce and you are starting to feel like this excursion could be a mistake"},
+        { name: "Jailhouse Rock",
+          source: "https://images.fineartamerica.com/images-medium-large/1-jailhouse-rock-and-courthouse-rock-edward-peterson.jpg",
+          message: "Jailhouse rock marks the end of that terrible valley and, and a good place to recouperate before moving ahead"},
+        { name: "Tico's Creek",
+          source: "http://kingofwallpapers.com/creek/creek-012.jpg",
+          message: "finally a chance to refill water and escape the heat, get your swimming shorts on and lets get wet!"},
+        { name: "Singing Plains",
+          source: "http://images6.mygola.com/e2b3378537a03da82127e67831f76ce6_1394370901_l.jpg",
+          message: "Wind sings as it blows over these beautiful plains. the grassy feilds inspire you to continue on"},
+        { name: "Marshes of Madness",
+          source: "https://media-curse.cursecdn.com/attachments/36/418/marshes_of_madness.jpg",
+          message: "these terrible marshes make your party long for the green hills they left, 'why did we not just settle down there!?'"},
+        { name: "Howling Mountain Pass",
+          source: "http://wallup.net/wp-content/uploads/2016/01/118883-nature-mountain_pass-mountain.jpg",
+          message: "out of the marshes and through this dark mountain pass, at night your party hears the growls of strange animals and want to move quickly"},
+        { name: "Rolling Hills",
+          source: "http://maynardnambiar.com/development/mockup/wp-content/themes/wordpress-bootstrap-master/library/img/rolling-hills.jpg",
+          message: "finally a place to rest.... maybe. the weather and terrain are great, but tales of violent native tribes leave an unsettling feeling"},
+        { name: "Fire Swamp",
+          source: "https://yourhappyplaceblog.files.wordpress.com/2015/04/princessbride_165pyxurz.jpg",
+          message: "a volcanic swamp that filled with agressive vermin, the hardest challenge yet but your destination is no more than a week away!"}
       ] // all the locations in the game
     this.daysSpent = 0;
     this.currentLocation = 0; // index of the locations array
     this.diseases = [
       {name: "cholera", chance: 30},
-      {name: "dysentery", chance: 20},
+      {name: "dysentery", chance: 30},
       {name: "broken leg", chance: 80},
       {name: "broken arm", chance: 60},
       {name: "bitten by snake", chance: 100},
       {name: "influenza", chance: 20},
-      {name: "spontaneous combustion", chance: 5000}
+      {name: "spontaneous combustion", chance: 500}
     ]
     if (id === undefined) {
       this.id = Date.now()
@@ -52,6 +66,28 @@ class Game {
     }
   }
 
+
+  hunt(){
+    let randomNum = Math.floor(Math.random()*5)
+    if (this.supplies.bullet <= 0){
+      this.supplies.bullet = 0
+      this.huntStatus = "You are Out of Bullets!"
+      return 'hunt'
+    }
+    if (randomNum === 1 && this.supplies.bullet > 0){
+      this.supplies.poundsFood+= 20
+      this.supplies.bullet-= 30
+      this.huntStatus = "Bag'd a big one!"
+      return 'hunt'
+    }
+
+    else {
+      this.supplies.bullet-= 30
+      this.supplies.poundFood-= 5
+      this.huntStatus = "no luck hunting today "
+      return 'hunt'
+    }
+  }
   save(){
     fs.writeFileSync('game' + this.id + '.json', JSON.stringify(this))
   }
@@ -68,7 +104,7 @@ class Game {
   checkWagon(){
     let allSupplies = Object.getOwnPropertyNames(this.supplies)
     for (var i = 0; i<4; i++){
-      if(this.getBroke(10)){
+      if(this.getBroke(50)){
         let selectedSupply = allSupplies[i]
         this.supplies[selectedSupply] -= 1
         if (this.supplies[selectedSupply] < 0){
@@ -156,12 +192,12 @@ class Game {
       if (this.partyMembers[i].status == "sick"){
         switch(this.partyMembers[i].disease){
           case "dysentery":
-            if (this.die(2, i)){
+            if (this.die(3, i)){
               return true
             }
             break;
           case "cholera":
-            if (this.die(2, i)){
+            if (this.die(3, i)){
               return true
             }
             break;
